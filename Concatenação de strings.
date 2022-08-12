@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <string.h>
+	int main()
+	{
+		int tam1, tam2, i, j; 
+		char palavra1[20], palavra2[30], concate[60]; 
+		//o primeiro passo é saber o tamanho da string; 
+		printf("digite uma palavra:\n");
+		gets(palavra1);
+		printf("\n");
+		
+		printf("digite outra palavra\n");
+		gets(palavra2);
+		printf("\n");
+		
+		tam1 = strlen(palavra1);
+		tam2 = strlen(palavra2);
+		
+		for(i = 0; i < tam1; i++){
+					concate[i] = palavra1[i]; 
+		}
+
+		for(j = 0; j < tam2; j++){
+			concate[tam1 + j] = palavra2[j]; 
+		}
+		concate[tam1 + j] = NULL; 
+		printf("%s", concate);
+		
+		
+		
+		
+		return 0;
+	}

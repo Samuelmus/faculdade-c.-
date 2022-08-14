@@ -1,0 +1,31 @@
+#include<stdio.h>
+#include<string.h>
+
+main(){
+       char string[50],auxiliar[50];
+       
+
+       int a,b=0;
+       printf("Digite a palavra: ");
+       gets(string);  
+      
+       for(a=0;string[a]!='\0';a++){        
+             b++;
+       }
+       
+       
+  
+   	     
+        a = 0;
+               printf ("Digite uma nova palavra");
+               gets (auxiliar);
+               
+               for(string[b]='\0';auxiliar[a]!='\0';a++){
+                    string[b]=auxiliar[a];  
+                     b++;
+               }
+               //strcat (string, auxiliar);
+              string[b] = NULL;
+              printf ("A palavra concatenada eh: %s\n", string);
+       
+       return 0;

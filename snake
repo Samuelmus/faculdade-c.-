@@ -1,0 +1,361 @@
+#include<stdio.h>
+#include<stdlib.h> // Para função srand() e system()
+#include<windows.h> // Para função SetConsoleCursorPosition()
+#include<locale.h> // Linguaguem da regão
+#include<conio.h> // Para função getch() e kbhit()
+#include<time.h> // Para usar o Sleep
+
+int a, b, L, L2; //Declaração de variareis
+void mgotoxy(int x, int y) // "gotoxy" é uma função que move o cursor para a linha y e coluna x
+{
+	COORD c;
+	c.X = x;
+	c.Y = y;
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), c); // Ira setar uma posição para o cursor
+}
+
+// Variáveis Globais
+int c[300][2], pontos = 1, cx = 2, cy = 2;
+int comida[2], velo = 150;
+int  bug = 0; // BUG DO WHILE NO BREAK, USEI UM CRITÉRIO PARA NÃO IGNORAR O GETCHAR().
+// FUNÇÕES PARA AS COORDENADAS (x,y).
+void gotoxy(int x, int y)  // Função
+{
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), (COORD)
+	{
+		x, y
+	});
+}
+
+void desenha()  // 1º Desenharemos a cobrinha.
+{
+	int i;
+	for(i = 0; i < pontos; i++)
+	{
+		gotoxy(c[i][0], c[i][1]);
+		printf("%c", 219);
+	}
+}
+
+void atualiza()  // Atualiza a posição da cobrinha, quando ela se movimentar.
+{
+	int i;
+	gotoxy(c[pontos][0], c[pontos][1]);
+	printf(" ");
+	for(i = pontos; i >= 0; i--)
+	{
+		c[i + 1][0] = c[i][0];
+		c[i + 1][1] = c[i][1];
+	}
+}
+
+int analiza()  // Verifica se a cobrinha enconstou em seu próprio corpo.
+{
+	int i, retorno = 0;
+	for(i = 1; i < pontos; i++)
+	{
+		if(cx == c[i][0] && cy == c[i][1])
+		{
+			retorno = 1;
+		}
+	}
+	return retorno;
+}
+
+void geraComida()  // Gera comida em local aleatório
+{
+	gotoxy(comida[0], comida[1]);
+	printf(" ");
+	srand(time(NULL)); // gera sementes aleatórias com base no tempo.
+	comida[0] = (rand() % 48) + 1; // gerar valores aleatórios(sementes).
+	comida[1] = (rand() % 18) + 1;
+	gotoxy(comida[0], comida[1]);
+	printf("%c", 1);
+}
+
+int main()
+{
+	int loop = 0; //vamos criar um loop para quando o jogo acabar retornar ao menu
+	while(loop == 0)
+	{
+
+		// MENU E VARIAVEIS DO JOGO
+		int opcao;
+		int i, gameover = 0;
+		int tecla = 77;
+		int segundo = 0; //segundos
+		int minuto = 0; //minutos
+		int hora = 0; //horas
+		int milisegundo = 0;
+
+		do
+		{
+inicio:
+			opcao = 0;
+			L = 7;
+			L2 = 5;
+			b = 2; //Colocando o cursor nas posições declaradas(L = CURSO -->; L2; APAGA OS RASTROS; B2 AUXILIA NAS SETAS);
+			system("cls"); // Limpa a tela
+			system("color 0f"); // Serve para modificar o plano de fundo( como está em off, fica preto e branco)
+
+
+
+//Interface dos menus
+			printf("   _____    _   __   ___       __ __    ______\n");
+			printf("  / ___/   / | / /  /   |     / //_/   / ____/\n");
+			printf("  \\__ \\   /  |/ /  / /| |    / ,<     / __/\n");
+			printf(" ___/ /  / /|  /  / ___ |   / /| |   / /___\n");
+			printf("/____/  /_/ |_/  /_/  |_|  /_/ |_|  /_____/\n");
+
+			printf(" \n\n       ====  %c  JOGAR \n        ==== %c  RANKINGS \n         ====%c  CREDITOS \n          ===== SAIR\n", 1, 1, 1, 1);
+			do
+			{
+				mgotoxy(1, L);
+				printf("-->");
+				mgotoxy(10, 6);
+				if(kbhit)
+				{
+					a = getch();
+				}
+				if(a == 80 && b < 5)
+				{
+					L2 = L;    /*seta p/baixo*/
+					L++;
+					b++;
+				}
+				if(a == 72 && b > 2)
+				{
+					L2 = L;    /*seta p/cima */
+					L--;
+					b--;
+				}
+				if(L != L2)
+				{
+					mgotoxy(1, L2);
+					printf("   ");
+					L2 = L;
+				}
+				if(a == 13)
+				{
+					opcao = b - 1;
+				}
+			}
+			while(opcao == 0);
+			switch (opcao)
+			{
+			case 1:
+				system("cls");
+				printf("\n    INICIAR\n");
+				getch();
+
+				FILE *pont_arq; //vamos criar uma váriavel ponteiro para pegar  arquivo.
+				char jogador[100]; // variavel tipo string.
+
+				//Abrindo arquivo
+				pont_arq = fopen("RANKING.txt", "a"); //criando o txt.
+
+				//testanto se arquivo foi criado.
+				if(pont_arq == NULL)
+				{
+					printf("Erro na inscrição do jogador!");
+					system("pause");
+				}
+
+				else  // caso ele esteja passando a mensagem para o arquivo.
+				{
+					printf("NICK DO JOGADOR: ");
+					scanf("%s", jogador);
+
+
+					printf("SUCESSO!");
+				}
+
+				getch();
+				system("cls");
+
+
+// Desenharemos o local aonde a cobra vai se movimentar. Utilizaremos a tabela ANCII e laços para os gráficos.
+				printf("\n\tG%cME", 1); //eastereggs
+				for(i = 0; i < 50; i++) // Linha superior
+				{
+					gotoxy(i, 0);
+					printf("%c", 178);
+					Sleep(5); // Pausa execução por 5 milissegunos
+				}
+
+				for(i = 0; i < 20; i++) // Coluna da direita
+				{
+					gotoxy(50, i);
+					printf("%c", 178);
+					Sleep(5); // Pausa execução por 5 milissegunos
+				}
+				for(i = 50; i >= 0; i--) // Linha inferior
+				{
+					gotoxy(i, 20);
+					printf("%c", 178);
+					Sleep(05); // Pausa execução por 5 milissegunos
+				}
+				for(i = 20; i > 0; i--) //Coluna da esquerda
+				{
+					gotoxy(0, i);
+					printf("%c", 178);
+					Sleep(5); // Pausa execução por 5 milissegunos
+				}
+				c[0][0] = cx; //aonde a cobra vai inicar a partida
+				c[0][1] = cy; //aonde a cobra vai inicar a partida
+				geraComida(); // Gera a primeira comida
+				desenha(); // Desenha a cobra
+				tecla = 'd'; // A direção é para a direita
+
+				while(gameover == 0) // Enquanto o usuário não perder
+				{
+					gotoxy(52, 2); // Move o cursor para c: 52, l: 2
+					printf("PONTOS: %d\t", pontos);
+					gotoxy(52, 4);
+					printf("VELOCIDADE: %d", 1000 / velo);
+					gotoxy(52, 6);
+					printf("TEMPO: %dh:%dm:%ds:%d", hora, minuto, segundo, milisegundo);
+					c[0][0] = cx;
+					c[0][1] = cy;
+					if(kbhit()) // Se alguma tecla for apertada, o valor
+						tecla = getch(); // vai para a variável 'tecla'
+
+					if(tecla == 'w' || tecla == 'W' || tecla == 72)
+					{
+						cy--;
+						if(cy == 0) break; // Se a cabeça da cobra estiver na parede superior,
+					}                    // O jogo acaba
+					if(tecla == 'a' || tecla == 'A' || tecla == 75)
+					{
+						cx--;
+						if(cx == 0) break; // Se a cabeça da cobra estiver na parede da esquerda,
+					}                    // O Jogo acaba
+					if(tecla == 's' || tecla == 'S' || tecla == 80)
+					{
+						cy++;
+						if(cy == 20) break; // Se a cabeça da cobra estiver na parede de baixo,
+					}                     // O jogo acaba
+					if(tecla == 'd' || tecla == 'D' || tecla == 77)
+					{
+						cx++;
+						if(cx >= 50) break; // Se a a cabeça da cobra estiver na parede da direida,
+					}                     // O jogo acaba
+
+					if(cx == comida[0] && cy == comida[1]) // Se a cobra comer a comida
+					{
+						pontos++;
+						if(velo > 50) velo -= 10; // Velocidade em milissegundos abaixa
+						geraComida();
+					}
+					gameover = analiza();
+					atualiza(); // Atualiza a cobra
+					desenha(); // Desenha a cobra
+					gotoxy(50, 20);
+					Sleep(velo);
+
+					// TEMPO
+					if(milisegundo == 10)
+					{
+						milisegundo = 0;
+						segundo++;
+					}
+
+					if(segundo == 60)
+					{
+						segundo = 0;
+						minuto++;
+					}
+
+					if(minuto == 60)
+					{
+						minuto = 0;
+						hora++;
+					}
+					if(hora == 24)
+					{
+						hora = 0;
+					}
+
+					if(velo)
+						milisegundo++;
+				}
+
+				// Usando fprint para armazenar a string no arquivo.
+				fprintf(pont_arq, "\t------------------------------------------------------------\n\t  JOGADOR: %s\t  PONTUACAO: %d\t TEMPO: %dh:%dm:%ds:%d\n\t------------------------------------------------------------\n\n", jogador, pontos, hora, minuto, segundo, milisegundo);
+
+				// Usando fclose para fechar o arquivo.
+				fclose(pont_arq);
+
+				system("cls"); // Quando o usuário perder, limpa a tela e exibe uma mensagem final
+				printf("\n\n\t\t\t\t\t%s PERDEU!\n", jogador); // printf no nome do jogador, alertando que ele perdeu
+				printf("\n\t\t\t\tPONTUACAO: %d", pontos); // printf nos pontos do jogador
+				printf("\tTEMPO: %dh:%dm:%ds:%d", hora, minuto, segundo, milisegundo); // printf no tempo do jogador
+				printf("\n\t\t\t\t    Agradecemos por jogar SNAKE!\n\n"); // agradecimentos!
+				system("pause");
+
+				pontos = 1, cx = 2, cy = 2; // reinicia todas as configuraçoes para o loop não dá problema.
+				velo = 150;
+				bug++; //parte II da solução do Bug so while no getchar;
+
+				//zerando o tempo.
+				segundo = 0; //segundos
+				minuto = 0; //minutos
+				hora = 0; //horas
+				milisegundo = 0; //sleep
+				system("cls"); // para não ficar armazenado a ultima posição da cobra.
+
+
+				break;
+			case 2:
+				system("cls");
+				printf("\n\t\t\t\tJOGADORES\n"); // agr iremos ler os arquivos armazenados no arquivo de texo criado anteriomente. "RANKING".
+				FILE *file;
+				file = fopen("RANKING.txt", "r");
+				if(file == NULL)
+				{
+					printf("JOGADOR NAO INDENTIFICADO");
+					return 0;
+				}
+				char NOMES[100]; // string que vai armazenar os nomes dos jogadores.
+				while(fgets(NOMES, 100, file) != NULL)
+				{
+					printf("%s", NOMES);
+				}
+				fclose(file); // fechar o arquivo
+				printf("\n\n\n\t\t\tAperte ENTER para sair do RANKING\n");
+				getchar();
+				if(bug == 1) // solução do bug, agora mesmo que ele ignore o getchar(); ele entrará no IF;
+				{
+					getchar();
+					bug--;
+				}
+				break;
+			case 3:
+				system("cls");
+				printf("\n    \tCREDITOS\n\n");
+				printf("\tINTEGRANTES:\n\n\tARTHUR - FORCA G\n\tTHIAGO - NAKARRARA\n\tTHALISSON - GOVERNADOR\n\tANTHONY - MPABBE\n\tSAMUEL - CHICKEN LITTLE\n");
+				printf("\n\n\n\t\t\tAperte ENTER para sair dos CREDITOS\n");
+				getchar();
+				if(bug == 1)
+				{
+					getchar();
+					bug--;
+				}
+				break;
+			case 4:
+				system("cls");
+				printf("voce pediu para sair, prencione qualquer tecla para continuar\n");
+				loop++;
+				break;
+			default:
+				printf("voce deve escolher uma opcao valida\n");
+				printf("Precione qualquer tecla para voltar ao menu\n");
+				system("pause");
+				goto inicio;
+			}
+
+		}
+		while(opcao != 4);
+	}
+	return 0;
+}
